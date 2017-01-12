@@ -1,6 +1,6 @@
 source("Estado.R")
 
-## Classe e métodos para o problema dos 3 Missionários e 3 Canibais
+## Classe e métodos para o problema do Aspirador de pó 2x2
 Aspirador <- function(desc = NULL, pai = NULL){
   
   e <- environment()
@@ -25,6 +25,7 @@ Ops.Aspirador = function(obj1,obj2){
 
 ## Sobrecarga da função genérica "print" do R
 print.Aspirador <- function(obj) {
+  cat(" __ __  \n|Q1|Q2|\n|Q3|Q4|\n ¯¯ ¯¯\n")
   cat("(A Q1 Q2 Q3 Q4): (", obj$desc, ")\n")
   cat("G(n): ", obj$g, "\n")
   cat("H(n): ", obj$h, "\n")
@@ -50,29 +51,31 @@ geraFilhos.atual <- function(obj) {
   
   sAtual <- as.numeric(desc[desc[1]+1]) ##sujo atualmente??? desc[1] da quadrado atual
   
-  sNovo <- as.numeric(bAtual != 1)
-  
-  ## gera filhos usando todos os operadores  
+  ## gera filhos usando todos os operadores 
+    ##caso pode limpar
   if(sAtual == 1){
     
-    operadores <- list(c(1,desc[2:5]), c(1,desc[2:5]), c(1,1,bAtual), c(1,0,bAtual), c(0,1,bAtual))
+    novo <-desc
     
-    filhosDesc <- lapply(operadores, function(op) desc-op)
+    novo[novo[1]+1]<- 0 ## atribui limpo a posicao que esta o aspirador
     
-  } else {
+    filhosDesc <- list( novo , c(1,desc[2:5]), c(2,desc[2:5]), c(3,desc[2:5]), c(4,desc[2:5]))
+  
+    } else{
     
-    operadores <- list(c(2,0,bNovo), c(0,2,bNovo), c(1,1,bNovo), c(1,0,bNovo), c(0,1,bNovo))
+      filhosDesc <- list(c(1,desc[2:5]), c(2,desc[2:5]), c(3,desc[2:5]), c(4,desc[2:5]))
     
-    filhosDesc <- lapply(operadores, function(op) desc+op)
   }
   
   ## verifica estados filhos incompatíveis com o problema  
   incompativeis <- sapply(1:length(filhosDesc),
                           function(i) {
                             fDesc <- filhosDesc[[i]]
-                            if((fDesc['C'] > fDesc['M']) || ## Se #Canibais > #Missionários OU
-                               (any(fDesc[1:2] > 3)) ||     ##    #Canibais ou #Missionários > 3 OU
-                               (any(fDesc[1:2] < 0)))       ##    #Canibais ou #Missionarios < 0 então
+                            if(fDesc == desc ||               ## Se nao mover e nem limpar OU
+                                (fDesc[1]==2 && desc[1]==3) ||## se andar na diagonal OU
+                                (fDesc[1]==3 && desc[1]==2) ||
+                                (fDesc[1]==1 && desc[1]==4) ||
+                                (fDesc[1]==4 && desc[1]==1))  ## se andar na diagonal então
                               i ## é incompatível: retorna índice
                             else
                               0 ## senão é compatível
@@ -84,9 +87,9 @@ geraFilhos.atual <- function(obj) {
   ## remove estados filhos incompatíveis
   filhosDesc <- filhosDesc[-incompativeis]
   
-  ## gera os objetos Canibais para os filhos
+  ## gera os objetos Aspiradores para os filhos
   for(filhoDesc in filhosDesc){
-    filho <- Canibais(desc = filhoDesc, pai = obj)
+    filho <- Aspirador(desc = filhoDesc, pai = obj)
     filho$h <- heuristica(filho)
     filho$g <- obj$g + 1
     filhos <- c(filhos, list(filho))

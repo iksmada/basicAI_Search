@@ -78,8 +78,13 @@ geraFilhos.atual <- function(obj) {
     novo[novo[1]+1]<- 0 ## atribui limpo a posicao que esta o aspirador
     
     filhosDesc <- list( novo , c(1,desc[2:5]), c(2,desc[2:5]), c(3,desc[2:5]), c(4,desc[2:5]))
+    
+    custo <- 1
   
   } else{
+    
+    ##Acho que poderiamos ver a imcompatibilidade aqui já, porque ae já poderiámos ver o custo
+    ## do movimento
     
     filhosDesc <- list(c(1,desc[2:5]), c(2,desc[2:5]), c(3,desc[2:5]), c(4,desc[2:5]))
     

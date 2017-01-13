@@ -25,8 +25,8 @@ Ops.Aspirador = function(obj1,obj2){
 
 ## Sobrecarga da função genérica "print" do R
 print.Aspirador <- function(obj) {
-  ##cat(" __ __  \n|Q1|Q2|\n|Q3|Q4|\n ¯¯ ¯¯\n")
-  cat("(A Q1 Q2 Q3 Q4): (", obj$desc, ")\n")
+  cat(" __ __     ___ ___\n|Q1|Q2| : |",obj$desc[2],"|",obj$desc[3],"|\n|Q3|Q4|   |",obj$desc[4],"|",obj$desc[5],"|\n")
+  cat("Aspirador: Q", obj$desc[1], "\n")
   cat("G(n): ", obj$g, "\n")
   cat("H(n): ", obj$h, "\n")
   cat("F(n): ", obj$f, "\n")

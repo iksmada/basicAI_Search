@@ -25,7 +25,7 @@ Ops.Aspirador = function(obj1,obj2){
 
 ## Sobrecarga da função genérica "print" do R
 print.Aspirador <- function(obj) {
-  cat(" __ __  \n|Q1|Q2|\n|Q3|Q4|\n ¯¯ ¯¯\n")
+  ##cat(" __ __  \n|Q1|Q2|\n|Q3|Q4|\n ¯¯ ¯¯\n")
   cat("(A Q1 Q2 Q3 Q4): (", obj$desc, ")\n")
   cat("G(n): ", obj$g, "\n")
   cat("H(n): ", obj$h, "\n")
@@ -41,7 +41,7 @@ heuristica.Aspirador <- function(atual){
   return(sum(atual$desc[2:5]))
 }
 
-geraFilhos.atual <- function(obj) {
+geraFilhos.Aspirador <- function(obj) {
   
   filhos <- list()
   
@@ -99,7 +99,7 @@ geraFilhos.atual <- function(obj) {
   
   ## gera os objetos Aspiradores para os filhos
   for(i in c(1:length(filhosDesc))){
-    filho <- Aspirador(desc = filhosDesc[i], pai = obj)
+    filho <- Aspirador(desc = filhosDesc[[i]], pai = obj)
     filho$h <- heuristica(filho)
     filho$g <- obj$g + custo[i]
     filhos <- c(filhos, list(filho))

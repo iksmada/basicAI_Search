@@ -1,18 +1,6 @@
 source("Estado.R")
 
-## Classe e métodos para o problema do Aspirador de pó 2x2#
-## Temos que o aspirador pode realizar quatro procedimentos:
-## I) aspirar sujeira do quadrado em que se encontra
-## II) mover para o quadrado da direita 
-## III) moverpara o quadrado de baixo 
-## IV) mover para o quadrado da esquerda
-## V) mover para o quadrado de cima
-## Sendo que sempre é preciso verificar a possibilidade do movimento a ser executado. 
-## Também temos o seguinte custo 
-## a) 1 para andar para direita ou esquerda
-## b) 2 para aspirar a sujeira
-## c) 3 para andar para cima ou para baixo
-
+## Classe e métodos para o problema do Aspirador de pó 2x2
 Aspirador <- function(desc = NULL, pai = NULL){
   
   e <- environment()
@@ -36,9 +24,6 @@ Ops.Aspirador = function(obj1,obj2){
 }
 
 ## Sobrecarga da função genérica "print" do R
-## (A Q1 Q2 Q3 Q4), temos como A a posição atual do quadrado(1 a 4) e os Qs 
-## a informaçoes se eles estão sujos(1) ou limpos(0)
-
 print.Aspirador <- function(obj) {
   cat(" __ __  \n|Q1|Q2|\n|Q3|Q4|\n ¯¯ ¯¯\n")
   cat("(A Q1 Q2 Q3 Q4): (", obj$desc, ")\n")
@@ -52,69 +37,71 @@ heuristica.Aspirador <- function(atual){
   
   if(is.null(atual$desc))
     return(Inf)
-  
   ## h(obj) = Q1 + Q2 + Q3 + Q4
-  ## No caso a equação acima se baseia na soma dos estados "sujos" do estado atual
   return(sum(atual$desc[2:5]))
 }
 
-  custo <- 0
 geraFilhos.atual <- function(obj) {
   
   filhos <- list()
   
   filhosDesc <- list()
   
+  custo <-c()
+  
   desc <- obj$desc
   
   sAtual <- as.numeric(desc[desc[1]+1]) ##sujo atualmente??? desc[1] da quadrado atual
   
   ## gera filhos usando todos os operadores 
-  ## caso pode limpar
+    ##caso pode limpar
   if(sAtual == 1){
     
     novo <-desc
     
     novo[novo[1]+1]<- 0 ## atribui limpo a posicao que esta o aspirador
     
-    filhosDesc <- list( novo , c(1,desc[2:5]), c(2,desc[2:5]), c(3,desc[2:5]), c(4,desc[2:5]))
+    filhosDesc <- list(novo)
     
-    custo <- 1
-  
-  } else{
+    custo <- c(2)
+  }
+  ##se posicao atual é 1
+  if(desc[1]==1){
     
-    ##Acho que poderiamos ver a imcompatibilidade aqui já, porque ae já poderiámos ver o custo
-    ## do movimento
+    filhosDesc <- c(filhosDesc,list( c(2,desc[2:5]), c(3,desc[2:5])))
     
-    filhosDesc <- list(c(1,desc[2:5]), c(2,desc[2:5]), c(3,desc[2:5]), c(4,desc[2:5]))
+    custo<- c(custo,1,3)
     
   }
   
-  ## verifica estados filhos incompatíveis com o problema  
-  incompativeis <- sapply(1:length(filhosDesc),
-                          function(i) {
-                            fDesc <- filhosDesc[[i]]
-                            if(fDesc == desc ||               ## Se nao mover e nem limpar OU
-                                (fDesc[1]==2 && desc[1]==3) ||## se andar na diagonal OU
-                                (fDesc[1]==3 && desc[1]==2) ||
-                                (fDesc[1]==1 && desc[1]==4) ||
-                                (fDesc[1]==4 && desc[1]==1))  ## se andar na diagonal então
-                              i ## é incompatível: retorna índice
-                            else
-                              0 ## senão é compatível
-                          })
+  if(desc[1]==2){
+    
+    filhosDesc <- c(filhosDesc,list( c(4,desc[2:5]), c(1,desc[2:5])))
+    
+    custo<- c(custo,3,1)
+  }
   
-  ## mantém no vetor apenas os que são incompatíveis
-  incompativeis <- incompativeis[incompativeis != 0]
+  if(desc[1]==3){
+    
+    filhosDesc <- c(filhosDesc,list( c(4,desc[2:5]), c(1,desc[2:5])))
+    
+    custo<- c(custo,1,3)
+  }
   
-  ## remove estados filhos incompatíveis
-  filhosDesc <- filhosDesc[-incompativeis]
+  if(desc[1]==4){
+    
+    filhosDesc <- c(filhosDesc,list( c(3,desc[2:5]), c(2,desc[2:5])))
+    
+    custo<- c(custo,1,3)
+    
+  }
+  
   
   ## gera os objetos Aspiradores para os filhos
-  for(filhoDesc in filhosDesc){
-    filho <- Aspirador(desc = filhoDesc, pai = obj)
+  for(i in c(1:length(filhosDesc))){
+    filho <- Aspirador(desc = filhosDesc[i], pai = obj)
     filho$h <- heuristica(filho)
-    filho$g <- obj$g + 1
+    filho$g <- obj$g + custo[i]
     filhos <- c(filhos, list(filho))
   }
   

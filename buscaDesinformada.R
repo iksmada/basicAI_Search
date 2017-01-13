@@ -6,7 +6,7 @@ buscaEmLargura <- function(inicial, objetivo){
   while(length(abertos) != 0){
     atual <- abertos[[1]]
     abertos <- abertos[-1]
-    if(atual == objetivo){
+    if(atual$desc[2:5] == objetivo$desc[2:5]){
       return(recuperaCaminho(atual))
     }else {
       filhos <- geraFilhos(atual)
@@ -26,7 +26,7 @@ buscaEmProfundidade <- function(inicial, objetivo){
   while(length(abertos) != 0){
     atual <- abertos[[1]]
     abertos <- abertos[-1]
-    if(atual == objetivo){
+    if(atual$desc[2:5] == objetivo$desc[2:5]){
       return(recuperaCaminho(atual))
     }else {
       filhos <- geraFilhos(atual)
@@ -46,7 +46,7 @@ buscaCustoUniforme <- function(inicial, objetivo){
   while(length(abertos) != 0){
     atual <- abertos[[1]]
     abertos <- abertos[-1]
-    if(atual == objetivo){
+    if(atual$desc[2:5] == objetivo$desc[2:5]){
       return(recuperaCaminho(atual))
     }else {
       filhos <- geraFilhos(atual)

@@ -1,4 +1,4 @@
-debugSource("Canibais.R")
+debugSource("Aspirador.R")
 debugSource("buscaDesinformada.R")
 debugSource("buscaInformada.R")
 
